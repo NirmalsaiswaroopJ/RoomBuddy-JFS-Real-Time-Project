@@ -54,13 +54,14 @@ RoomBuddy/
 │   │   │   └── com/
 │   │   │       └── example/
 │   │   │           └── roombuddy/
+│   │   │               ├── config/
 │   │   │               ├── controller/
-│   │   │               ├── model/
+│   │   │               ├── dto/
+│   │   │               ├── entity/
 │   │   │               ├── repository/
 │   │   │               └── service/
 │   │   ├── resources/
 │   │       ├── static/
-│   │       ├── templates/
 │   │       └── application.properties
 │   └── test/
 ├── .gitignore
@@ -72,12 +73,13 @@ RoomBuddy/
 └── README.md
 ```
 
+- **`config/`**: Contains configuration classes such as security configurations, and any custom beans used in the application.
 - **`controller/`**: Contains the REST controllers handling HTTP requests.
-- **`model/`**: Contains the data models representing entities.
+- **`dto/`**: Contains Data Transfer Objects (DTOs) that are used to transfer data between layers (e.g., between controllers and services) without exposing the full entity models.
+- **`entity/`**: Contains the data models representing entities.
 - **`repository/`**: Contains the data access logic.
 - **`service/`**: Contains the business logic.
 - **`static/`**: Contains static assets like CSS, JavaScript, and images.
-- **`templates/`**: Contains Thymeleaf templates for server-side rendering.
 - **`application.properties`**: Configuration properties for the application.
 
 ## Spring Boot Initializer Configuration
@@ -167,7 +169,7 @@ Static Webpage - [https://roombuddyjfs.netlify.app/]
 ## Contributing
 
 Thank you for considering contributing to **RoomBuddy**! 🎉  
-We welcome **suggestions, bug reports, and pull requests**.
+I welcome **suggestions, bug reports, and pull requests**.
 
 ### To contribute:
 
@@ -190,6 +192,6 @@ Please ensure your code adheres to the existing code style and includes relevant
 ## Acknowledgements
 
 Thank you for exploring **RoomBuddy**! 🚀  
-We hope this platform assists you in finding the **perfect roommate**.  
+I hope this platform assists you in finding the **perfect roommate**.  
 
 If you have any **suggestions or feedback**, feel free to **reach out** or **open an issue** on **GitHub**. 😊
