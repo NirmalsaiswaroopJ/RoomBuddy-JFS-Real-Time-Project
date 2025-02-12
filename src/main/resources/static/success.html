@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to RoomBuddy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF6B6B;
+            --secondary-color: #4ECDC4;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.7;
+            transform-style: preserve-3d;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        .welcome-container {
+            position: relative;
+            width: 380px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            z-index: 10;
+            transform: rotateX(10deg) rotateY(-10deg);
+            transition: all 0.5s ease;
+        }
+
+        .welcome-container:hover {
+            transform: rotateX(0) rotateY(0);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(255,107,107,0.3);
+            animation: pulse 2s infinite alternate;
+        }
+
+        .logo span {
+            font-size: 40px;
+            color: white;
+            text-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 24px;
+            letter-spacing: -0.5px;
+        }
+
+        .tagline {
+            color: var(--text-color);
+            font-size: 16px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255,107,107,0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(255,107,107,0.4);
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        .social-proof {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .social-proof .mini-avatars {
+            display: flex;
+            margin-left: 10px;
+        }
+
+        .social-proof .mini-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin-left: -10px;
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="confetti-container" id="confettiContainer"></div>
+    
+    <div class="welcome-container">
+        <div class="logo">
+            <span>RB</span>
+        </div>
+        
+        <h2>Welcome Aboard! 🎉</h2>
+        
+        <p class="tagline">
+            You've just joined a vibrant community of roommates who turn strangers into lifelong friends.
+            Login to start exploring your new home.
+        </p>
+        
+        <a href="login.html" class="btn">Explore RoomBuddy</a>
+        
+        <div class="social-proof">
+            1000+ Happy Members
+            <div class="mini-avatars">
+                <div class="mini-avatar" style="background-color: #FF6B6B;"></div>
+                <div class="mini-avatar" style="background-color: #4ECDC4;"></div>
+                <div class="mini-avatar" style="background-color: #45B7D1;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFD93D'];
+            
+            for (let i = 0; i < 200; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.animationDuration = `${5 + Math.random() * 5}s`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = `${5 + Math.random() * 10}px`;
+                confetti.style.height = confetti.style.width;
+                confetti.style.opacity = `${0.5 + Math.random() * 0.5}`;
+                confetti.style.animationDelay = `-${Math.random() * 5}s`;
+                
+                container.appendChild(confetti);
+            }
+        }
+
+        window.addEventListener('load', createConfetti);
+    </script>
+</body>
+</html>

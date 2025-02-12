@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Homepage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bubble-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-100px) scale(1.1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+
+        .logout-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #ff0000;
+            border-radius: 15px;
+            padding: 20px;
+            width: 300px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.1);
+        }
+
+        .option-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            color: #ff0000;
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .error {
+            color: #ff0000;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .submit-btn {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .back-btn {
+            background-color: #666;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+
+        .back-btn:hover {
+            background-color: #555;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        #searchResults {
+            margin-top: 30px;
+        }
+
+        #searchResults h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bubble-container"></div>
+    
+    <button id="logoutBtn" class="logout-btn">
+        Logout
+    </button>
+
+    <div class="container">
+        <h1 id="welcomeMessage">Welcome back!</h1>
+        
+        <div id="mainOptions" class="options">
+            <div class="option-card" onclick="findBuddy()">
+                <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&auto=format&fit=crop&q=60" alt="Find Buddy" class="option-image">
+                <h2>Find Your Buddy</h2>
+            </div>
+            
+            <div class="option-card" onclick="postListing()">
+                <img src="https://images.unsplash.com/photo-1554774853-aae0a22c8aa4?w=800&auto=format&fit=crop&q=60" alt="Post Listing" class="option-image">
+                <h2>Post Your Listing</h2>
+            </div>
+        </div>
+
+        <div id="findBuddySection" class="section">
+            <h2>Find Your Buddy</h2>
+            <form id="findBuddyForm" onsubmit="searchBuddies(event)">
+                <div class="form-group">
+                    <label for="city">Select City</label>
+                    <select id="city" name="city" required>
+                        <option value="">Select a city</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Surat">Surat</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                    </select>
+                    <div class="error" id="cityError">Please select a city</div>
+                </div>
+                <button type="button" class="back-btn" onclick="showMainOptions()">Back</button>
+                <button type="submit" class="submit-btn">Search</button>
+            </form>
+
+            <div id="searchResults" class="results">
+                <h3>Search Results</h3>
+                <div id="resultList"></div>
+            </div>
+        </div>
+
+        <div id="postListingSection" class="section">
+            <h2>Post Your Listing</h2>
+            <form id="postListingForm" onsubmit="submitListing(event)">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                    <div class="error" id="nameError">Please enter your name</div>
+                </div>
+        
+                <div class="form-group">
+                    <label for="listingCity">City</label>
+                    <select id="listingCity" name="city" required>
+                        <option value="">Select a city</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Surat">Surat</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Bengaluru">Bengaluru</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Ahmedhabad">Ahmedhabad</option>
+                    </select>
+                    <div class="error" id="listingCityError">Please select a city</div>
+                </div>
+        
+                <div class="form-group">
+                    <label for="rent">Monthly Rent (₹)</label>
+                    <input type="number" id="rent" name="rent" min="0" required>
+                    <div class="error" id="budgetError">Please enter a valid budget</div>
+                </div>
+        
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" required></textarea>
+                    <div class="error" id="descriptionError">Please enter a description</div>
+                </div>
+        
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <div class="error" id="phoneError">Please enter a valid phone number</div>
+                </div>
+        
+                <button type="button" class="back-btn" onclick="showMainOptions()">Back</button>
+                <button type="submit" class="submit-btn">Submit Listing</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Create floating bubbles
+        function createBubbles() {
+            const container = document.querySelector('.bubble-container');
+            const bubbleCount = 15;
+
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                const size = Math.random() * 80 + 20;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.top = `${Math.random() * 100}%`;
+                
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(bubble);
+            }
+        }
+
+        // Show/hide sections
+        function showSection(sectionId) {
+            document.getElementById('mainOptions').style.display = 'none';
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function showMainOptions() {
+            document.getElementById('mainOptions').style.display = 'flex';
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('searchResults').style.display = 'none';
+        }
+
+        function findBuddy() {
+            showSection('findBuddySection');
+        }
+
+        function postListing() {
+            showSection('postListingSection');
+        }
+
+        function validateForm(formId) {
+            const form = document.getElementById(formId);
+            let isValid = true;
+
+            form.querySelectorAll('.error').forEach(error => {
+                error.style.display = 'none';
+            });
+
+            form.querySelectorAll('[required]').forEach(field => {
+                if (!field.value.trim()) {
+                    const errorId = field.id + 'Error';
+                    const errorElement = document.getElementById(errorId);
+                    if (errorElement) {
+                        errorElement.style.display = 'block';
+                        isValid = false;
+                    }
+                }
+            });
+
+            return isValid;
+        }
+
+        async function submitListing(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('postListingForm');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/room', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(formData).toString()
+                });
+
+                if (response.ok) {
+                    window.location.href = "success1.html";
+                    form.reset();
+                } else {
+                    const data = await response.text();
+                    throw new Error(data || "Failed to submit listing");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert(error.message || "Failed to submit listing. Please try again.");
+            }
+        }
+
+        async function searchBuddies(event) {
+            event.preventDefault();
+
+            const city = document.getElementById("city").value;
+            if (!city) {
+                alert("Please select a city.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/search-buddies?city=${encodeURIComponent(city)}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch listings.");
+                }
+
+                const responseText = await response.text();
+                console.log("Raw Response:", responseText);
+                
+                const listings = JSON.parse(responseText);
+                console.log("Parsed Listings:", listings);
+
+                // Show the find buddy section and ensure it's visible
+                showSection('findBuddySection');
+                
+                // Display the listings
+                displayListings(listings);
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Something went wrong. Please try again.");
+            }
+        }
+
+        function displayListings(listings) {
+            console.log("Displaying listings:", listings);
+
+            const resultsContainer = document.getElementById("resultList");
+            const searchResultsSection = document.getElementById("searchResults");
+            
+            if (!resultsContainer) {
+                console.error("Error: #resultList not found in DOM");
+                return;
+            }
+
+            // Make the search results section visible
+            searchResultsSection.style.display = 'block';
+            
+            resultsContainer.innerHTML = "";
+
+            if (listings.length === 0) {
+                resultsContainer.innerHTML = "<p>No listings found for this city.</p>";
+                return;
+            }
+
+            listings.forEach(listing => {
+                console.log("Adding listing:", listing);
+
+                const card = document.createElement("div");
+                card.classList.add("result-card");
+
+                card.innerHTML = `
+                    <h4>${listing.fullName}</h4>
+                    <p><strong>City:</strong> ${listing.city}</p>
+                    <p><strong>Rent:</strong> ₹${listing.rent}</p>
+                    <p>${listing.description}</p>
+                    <p><strong>Contact:</strong> ${listing.phone}</p>
+                `;
+
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        function logout() {
+            console.log("Logging out...");
+            window.location.href = "/";
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createBubbles();
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            welcomeMessage.style.opacity = '0';
+            welcomeMessage.style.animation = 'fadeIn 1s ease-out forwards';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join RoomBuddy | Find Your Perfect Roommate</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF3008;
+            --secondary: #1D1D1D;
+            --success: #36D57D;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #FFF5F3 0%, #FFF 100%);
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        .registration-container {
+            max-width: 500px;
+            margin: 50px auto;
+            position: relative;
+        }
+
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .form-card:hover {
+            transform: translateZ(20px) rotateX(2deg) rotateY(2deg);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .form-control {
+            height: 50px;
+            padding: 10px 20px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 48, 8, 0.1);
+            background: white;
+        }
+
+        .form-label {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            color: #666;
+            padding: 0 5px;
+        }
+
+        .form-control:focus + .form-label,
+        .form-control:not(:placeholder-shown) + .form-label {
+            top: 0;
+            left: 15px;
+            font-size: 12px;
+            background: white;
+            color: var(--primary);
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            height: 50px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #eee;
+            width: 100%;
+            margin-bottom: 30px;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--primary);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: floatAnimation 20s infinite;
+        }
+
+        .shape:nth-child(1) { width: 100px; height: 100px; top: 10%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 150px; height: 150px; top: 60%; left: 80%; animation-delay: 5s; }
+        .shape:nth-child(3) { width: 80px; height: 80px; top: 80%; left: 20%; animation-delay: 10s; }
+
+        @keyframes floatAnimation {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-30px, 30px) rotate(240deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        .success-checkmark {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            position: relative;
+            display: none;
+        }
+
+        .success-checkmark {
+            display: none; /* Initially hidden */
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #4CAF50; /* Green background */
+            position: relative;
+        }
+
+        .success-checkmark::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            border: solid white;
+            border-width: 0 6px 6px 0;
+            transform: rotate(45deg);
+            left: 14px;
+            top: 5px;
+            opacity: 0;
+            animation: draw-check 0.5s ease-in-out forwards;
+        }
+
+        @keyframes draw-check {
+            0% {
+                opacity: 0;
+                transform: rotate(45deg) scale(0.2);
+            }
+            100% {
+                opacity: 1;
+                transform: rotate(45deg) scale(1);
+            }
+        }
+
+        .login-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .login-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .login-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="registration-container">
+        <div class="form-card">
+            <h2 class="text-center mb-4">Join RoomBuddy</h2>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <form id="registerForm" action="/register" method="post">
+            
+                <div class="input-group">
+                    <input type="text" class="form-control" id="username" name="username" placeholder=" " required>
+                    <label class="form-label" for="username">Username</label>
+                </div>
+                <div class="input-group">
+                    <input type="email" class="form-control" id="email" name="email" placeholder=" " required>
+                    <label class="form-label" for="email">Email Address</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="password" name="password" placeholder=" " required>
+                    <label class="form-label" for="password">Password</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder=" " required>
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                </div>
+                <div class="input-group">
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder=" " required>
+                    <label class="form-label" for="phone">Phone Number</label>
+                </div>
+                <div class="success-checkmark">
+                    <div class="check-icon"></div>
+                </div>
+                <button type="submit" class="submit-btn w-100">Create Account</button>
+            </form>
+            <p class="text-center mt-4">Already have an account? <a href="login.html" class="login-link">Login</a></p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const inputs = form.querySelectorAll('input');
+        const progressFill = document.querySelector('.progress-fill');
+        
+        function updateProgress() {
+            const totalInputs = inputs.length;
+            let filledInputs = 0;
+            
+            inputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    filledInputs++;
+                }
+            });
+            
+            const progress = (filledInputs / totalInputs) * 100;
+            progressFill.style.width = `${progress}%`;
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', updateProgress);
+        });
+
+        form.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirmPassword');
+
+    if (password !== confirmPassword) {
+        const btn = form.querySelector('.submit-btn');
+        btn.style.background = '#dc3545';
+        btn.innerText = 'Passwords Do Not Match';
+        setTimeout(() => {
+            btn.style.background = 'var(--primary)';
+            btn.innerText = 'Create Account';
+        }, 2000);
+        return;
+    }
+
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            body: new URLSearchParams(formData) // 🔄 Convert FormData to URL-encoded format
+        });
+
+        if (response.ok) {
+            form.style.opacity = '0.5';
+            document.querySelector('.success-checkmark').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = '/success';
+            }, 2000);
+        } else {
+            const data = await response.json();
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        const btn = form.querySelector('.submit-btn');
+        btn.style.background = '#dc3545';
+        btn.innerText = error.message || 'Registration Failed';
+        setTimeout(() => {
+            btn.style.background = 'var(--primary)';
+            btn.innerText = 'Create Account';
+        }, 2000);
+    }
+});
+
+
+        // 3D tilt effect
+        const card = document.querySelector('.form-card');
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 30;
+            const rotateY = -(x - centerX) / 30;
+            
+            card.style.transform = `translateZ(20px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateZ(0) rotateX(0) rotateY(0)';
+        });
+    </script>
+</body>
+</html>
